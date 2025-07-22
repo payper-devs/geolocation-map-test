@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, defineProps } from "vue";
+
+const props = defineProps<{
+  lat: number;
+  lng: number;
+}>();
 
 const mapDiv = ref<HTMLDivElement | null>(null);
 
@@ -18,11 +23,17 @@ onMounted(() => {
 
   script.onload = () => {
     if (window.Tmapv3 && mapDiv.value) {
-      new window.Tmapv3.Map(mapDiv.value, {
-        center: new window.Tmapv3.LatLng(37.5652045, 126.98702028),
+      const map = new window.Tmapv3.Map(mapDiv.value, {
+        center: new window.Tmapv3.LatLng(props.lat, props.lng),
         width: "100%",
         height: "400px",
         zoom: 16,
+      });
+
+      // 마커 생성
+      new window.Tmapv3.Marker({
+        position: new window.Tmapv3.LatLng(props.lat, props.lng),
+        map: map,
       });
     }
   };
